@@ -1115,6 +1115,7 @@ void TrackAnalyzer::setLumi(const edm::Event& iEvent, const edm::EventSetup& iSe
     scal_lumi_ = lumiScalers->instLumi();
   } else
     scal_lumi_ = -1;
+  std::cout<<".......-------> Inst. Luminosity : "<<scal_lumi_<<std::endl;
 
   edm::Handle<edmNew::DetSetVector<SiPixelCluster> > pixelClusters;
   iEvent.getByToken(pixelClustersToken_, pixelClusters);
