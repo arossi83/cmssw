@@ -81,10 +81,12 @@ TrackAnalyzer::TrackAnalyzer(const edm::ParameterSet& iConfig, edm::ConsumesColl
   edm::InputTag primaryVertexInputTag = iConfig.getParameter<edm::InputTag>("primaryVertex");
   edm::InputTag pixelClusterInputTag = iConfig.getParameter<edm::InputTag>("pixelCluster4lumi");
   edm::InputTag scalInputTag = iConfig.getParameter<edm::InputTag>("scal");
+  edm::InputTag metaDataInputTag = iConfig.getParameter<edm::InputTag>("metadata");
   beamSpotToken_ = iC.consumes<reco::BeamSpot>(bsSrc);
   pvToken_ = iC.consumes<reco::VertexCollection>(primaryVertexInputTag);
   pixelClustersToken_ = iC.mayConsume<edmNew::DetSetVector<SiPixelCluster> >(pixelClusterInputTag);
-  lumiscalersToken_ = iC.mayConsume<OnlineLuminosityRecord>(scalInputTag);
+  lumiscalersToken_ = iC.mayConsume<LumiScalersCollection>(scalInputTag);
+  metaDataToken_ = iC.mayConsume<OnlineLuminosityRecord>(metaDataInputTag);
   if (useBPixLayer1_)
     lumi_factor_per_bx_ = GetLumi::FREQ_ORBIT * GetLumi::SECONDS_PER_LS / GetLumi::XSEC_PIXEL_CLUSTER;
   else
@@ -1105,16 +1107,26 @@ void TrackAnalyzer::setBX(const edm::Event& iEvent) { bx_ = iEvent.bunchCrossing
 #include "DataFormats/TrackerCommon/interface/TrackerTopology.h"
 void TrackAnalyzer::setLumi(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
   // as done by pixelLumi http://cmslxr.fnal.gov/source/DQM/PixelLumi/plugins/PixelLumiDQM.cc
-  edm::Handle<OnlineLuminosityRecord> lumiScalers;
-  iEvent.getByToken(lumiscalersToken_, lumiScalers);
-  if (lumiScalers.isValid()){// && !lumiScalers->empty()) {
-  //    OnlineLuminosityRecord::const_iterator scalit = lumiScalers->begin();
-  //    scal_lumi_ = scalit->instLumi();
-    scal_lumi_ = lumiScalers->instLumi();
+
+  edm::Handle<OnlineLuminosityRecord> metaData;
+  iEvent.getByToken(metaDataToken_, metaData);
+  if (metaData.isValid()) {
+    scal_lumi_ = metaData->instLumi();
     std::cout<<".......-------> OnlineLuminosityRecord is Valid"<<std::endl;
-  } else {
-    scal_lumi_ = -1;
+  }
+  else {
     std::cout<<".......-------> OnlineLuminosityRecord is NOT Valid"<<std::endl;
+    edm::Handle<LumiScalersCollection> lumiScalers;
+    iEvent.getByToken(lumiscalersToken_, lumiScalers);
+    if (lumiScalers.isValid() && !lumiScalers->empty()) {
+      std::cout<<".......-------> LumiScalersCollection is Valid"<<std::endl;
+      LumiScalersCollection::const_iterator scalit = lumiScalers->begin();
+      scal_lumi_ = scalit->instantLumi();
+    }
+    else {
+      scal_lumi_ = -1;
+      std::cout<<".......-------> Both LumiScalersCollection and  OnlineLuminosityRecord are NOT Valid"<<std::endl;
+    }
   }
   std::cout<<".......-------> Inst. Luminosity : "<<scal_lumi_<<std::endl;
 

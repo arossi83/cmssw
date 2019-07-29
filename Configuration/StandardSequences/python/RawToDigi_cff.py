@@ -81,20 +81,15 @@ muonDTDigis.inputLabel = 'rawDataCollector'
 muonRPCDigis.InputLabel = 'rawDataCollector'
 castorDigis.InputLabel = 'rawDataCollector'
 
-
+#Add OnlineMetaData
 from Configuration.Eras.Modifier_run2_onlineMetaData_2018_cff import run2_onlineMetaData_2018
 RawToDigiTask2018=RawToDigiTask.copy()
 RawToDigiTask2018.add(onlineMetaDataDigis)
-#run2_onlineMetaData_2018.toReplaceWith(RawToDigiTask, RawToDigiTask.add(onlineMetaDataDigis))
 run2_onlineMetaData_2018.toReplaceWith(RawToDigiTask, RawToDigiTask2018)
 
 
 from Configuration.Eras.Modifier_run3_common_cff import run3_common
-#RawToDigiTaskRun3=RawToDigiTask.copy()
-#RawToDigiTaskRun3.remove([castorDigis,scalersRawToDigis])
-#RawToDigiTaskRun3.add(onlineMetaDataDigis)
 run3_common.toReplaceWith(RawToDigiTask, RawToDigiTask.copyAndExclude([castorDigis,scalersRawToDigi]))
-#run3_common.toReplaceWith(RawToDigiTask, RawToDigiTaskRun3)
 
 
 from Configuration.Eras.Modifier_phase2_tracker_cff import phase2_tracker
