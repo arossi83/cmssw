@@ -111,6 +111,7 @@ namespace {
     edm::ESHandle<TrackerGeometry> tracker;
     iSetup.get<TrackerDigiGeometryRecord>().get(tracker);
     assert(tracker.isValid());
+    auto const& tkGeo=*tracker;
 
     edm::ESHandle<TrackerTopology> tTopoHandle;
     iSetup.get<TrackerTopologyRcd>().get(tTopoHandle);
@@ -187,7 +188,7 @@ namespace {
         if (!pixhit)
           continue;
 
-        auto geomdetunit = dynamic_cast<const PixelGeomDetUnit*>(pixhit->detUnit());
+        auto geomdetunit = dynamic_cast<const PixelGeomDetUnit*>(tkGeo.idToDet(id));
         auto const& topol = geomdetunit->specificTopology();
 
         // get the cluster
@@ -217,7 +218,8 @@ namespace {
         // correct charge for track impact angle
         auto charge = cluster.charge() * ltp.absdz();
 
-        auto clustgp = pixhit->globalPosition();  // from rechit
+	LocalPoint clustlp = topol.localPosition(MeasurementPoint(cluster.x(), cluster.y()));
+        GlobalPoint clustgp = geomdetunit->surface().toGlobal(clustlp);
 
         int part;
         ClusterData::ArrayType meas;
