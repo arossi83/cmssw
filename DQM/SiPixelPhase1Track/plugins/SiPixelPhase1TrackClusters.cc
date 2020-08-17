@@ -351,8 +351,12 @@ namespace {
 
     bool hasClusters = false;
     
+    edm::Handle< edm::DetSetVector<PixelDigi> > pixelDigis;
+    iEvent.getByToken(tPixelDigi, pixelDigis);
+
     edmNew::DetSetVector<SiPixelCluster>::const_iterator it;
-    
+    edm::DetSetVector<PixelDigi>::const_iterator DSViter;
+
     for (it = inputPixel->begin(); it != inputPixel->end(); ++it) {
       auto id = DetId(it->detId());
 
@@ -369,6 +373,13 @@ namespace {
           float pixx = pixelsVec[i].x;  // index as float=iteger, row index
           float pixy = pixelsVec[i].y;  // same, col index
 	  float intADC = pixelsVec[i].adc; // this is calibrated charge
+
+	  for(DSViter = pixelDigis->begin(); DSViter != pixelDigis->end(); DSViter++) {
+	    edm::DetSet<PixelDigi>::const_iterator di;
+	    for(di = DSViter->data.begin(); di != DSViter->data.end(); di++) {
+	      cout << "digis adc: " << di->adc();
+	    }
+	  }
 
           bool bigInX = topol.isItBigPixelInX(int(pixx)); // dip solo da pixel
           bool bigInY = topol.isItBigPixelInY(int(pixy));// dip solo da pixel
