@@ -13,6 +13,7 @@
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/SiPixelDigi/interface/PixelDigi.h"
 
 #include "DataFormats/SiPixelCluster/interface/SiPixelClusterShapeCache.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -117,6 +118,7 @@ namespace {
     edm::EDGetTokenT<reco::VertexCollection> offlinePrimaryVerticesToken_;
     edm::EDGetTokenT<SiPixelClusterShapeCache> pixelClusterShapeCacheToken_;
     edm::EDGetTokenT<edmNew::DetSetVector<SiPixelCluster>> pixelSrcToken_;
+    edm::EDGetTokenT<edm::DetSetVector<PixelDigi>> tPixelDigi;
     //edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord> trackerGeometryToken_;
   };
 
@@ -366,6 +368,7 @@ namespace {
         for (unsigned int i = 0; i < pixelsVec.size(); ++i) {
           float pixx = pixelsVec[i].x;  // index as float=iteger, row index
           float pixy = pixelsVec[i].y;  // same, col index
+	  float intADC = pixelsVec[i].adc; // this is calibrated charge
 
           bool bigInX = topol.isItBigPixelInX(int(pixx)); // dip solo da pixel
           bool bigInY = topol.isItBigPixelInY(int(pixy));// dip solo da pixel
