@@ -72,6 +72,7 @@ namespace {
       ON_TRACK_NDIGIS,
       OFF_TRACK_NDIGIS,
 
+      DIGIS_OVER_CLUSTER_TOTCHARGE,
 
       //OFF_TRACK_READOUT_CHARGE,
       //OFF_TRACK_READOUT_NCLUSTERS,
@@ -270,7 +271,7 @@ namespace {
 
         // correct charge for track impact angle
         auto charge = cluster.charge() * ltp.absdz();//per qualsiasi cluster
-
+	
         auto clustgp = pixhit->globalPosition();  // from rechit
 
         int part;
@@ -372,6 +373,8 @@ namespace {
 	if (!(rHSiPixelClusters.find(&cluster) == rHSiPixelClusters.end())) continue;
 	std::cout << "Off track" << std::endl;
 
+	float total_digADC = 0.;
+
 	int row = cluster.x() - 0.5, col = cluster.y() - 0.5;
 	const std::vector<SiPixelCluster::Pixel> pixelsVec = cluster.pixels();
         for (unsigned int i = 0; i < pixelsVec.size(); ++i) {
@@ -393,15 +396,16 @@ namespace {
 	      float digx = di->row(); // row
 	      float digy = di->column(); // column
 	      if(digx == pixx && digy == pixy){
+		total_digADC = total_digADC + digADC;
 		cout << endl << "pix adc: " << intADC << "\tdig adc: " << digADC << endl;
-		cout << "pix x: " << pixx << "\tdig x: " << digx << endl;
-		cout << "pix y: " << pixy << "\tdig y: " << digy << endl;
+		//cout << "pix x: " << pixx << "\tdig x: " << digx << endl;
+		//cout << "pix y: " << pixy << "\tdig y: " << digy << endl;
 		//break;
 	      }
 	      else continue;
 	    }
 	  }
-
+	  cout << endl << "total digis adc so far: " << total_digADC << endl;
           bool bigInX = topol.isItBigPixelInX(int(pixx)); // dip solo da pixel
           bool bigInY = topol.isItBigPixelInY(int(pixy));// dip solo da pixel
           float pixel_charge = pixelsVec[i].adc;
@@ -416,6 +420,12 @@ namespace {
           }
         }  // End loop over pixels
 	
+	float digiscluster_ratio = cluster.charge() / total_digADC;
+
+	histo[DIGIS_OVER_CLUSTER_TOTCHARGE].fill(digiscluster_ratio, id, &iEvent); 
+
+	cout << endl << "cluster charge: " << cluster.charge() << "\ttotal digi adc: " << total_digADC << endl;
+
 	for (int i = 0; i < cluster.size(); i++) {
           SiPixelCluster::Pixel const& vecipxl = cluster.pixel(i);
           histo[DIGIS_HITMAP_OFF_TRACK].fill(id, &iEvent, vecipxl.y, vecipxl.x);

@@ -26,7 +26,7 @@ hltSiPixelPhase1TrackClustersOffTrackCharge = hltDefaultHistoTrack.clone(
   )
 )
 
-hltSiPixelPhase1TrackClustersOnTrackBigPixelCharge = DefaultHistoTrack.clone(
+hltSiPixelPhase1TrackClustersOnTrackBigPixelCharge = hltDefaultHistoTrack.clone(
   name = "bigpixelcharge",
   title = "Corrected Big Pixel Charge (OnTrack)",
   range_min = 0, range_max = 80e3, range_nbins = 100,
@@ -41,7 +41,7 @@ hltSiPixelPhase1TrackClustersOnTrackBigPixelCharge = DefaultHistoTrack.clone(
   )
 )
 
-hltSiPixelPhase1TrackClustersOffTrackBigPixelCharge = DefaultHistoTrack.clone(
+hltSiPixelPhase1TrackClustersOffTrackBigPixelCharge = hltDefaultHistoTrack.clone(
   name = "bigpixelcharge_OffTrack",
   title = "Corrected Big Pixel Charge (OffTrack)",
   range_min = 0, range_max = 80e3, range_nbins = 100,
@@ -56,7 +56,7 @@ hltSiPixelPhase1TrackClustersOffTrackBigPixelCharge = DefaultHistoTrack.clone(
   )
 )
 
-hltSiPixelPhase1TrackClustersOnTrackNotBigPixelCharge = DefaultHistoTrack.clone(
+hltSiPixelPhase1TrackClustersOnTrackNotBigPixelCharge = hltDefaultHistoTrack.clone(
   name = "notbigpixelcharge",
   title = "Corrected Not Big Pixel Charge (OnTrack)",
   range_min = 0, range_max = 80e3, range_nbins = 100,
@@ -71,7 +71,7 @@ hltSiPixelPhase1TrackClustersOnTrackNotBigPixelCharge = DefaultHistoTrack.clone(
   )
 )
 
-hltSiPixelPhase1TrackClustersOffTrackNotBigPixelCharge = DefaultHistoTrack.clone(
+hltSiPixelPhase1TrackClustersOffTrackNotBigPixelCharge = hltDefaultHistoTrack.clone(
   name = "notbigpixelcharge_OffTrack",
   title = "Corrected Not Big Pixel Charge (OffTrack)",
   range_min = 0, range_max = 80e3, range_nbins = 100,
@@ -355,6 +355,22 @@ hltSiPixelPhase1DigisNdigisOffTrack = hltDefaultHistoTrack.clone(
 )
 
 
+hltSiPixelPhase1TrackClustersDigisOverClusterTotcharge = hltDefaultHistoTrack.clone(
+  name = "digis_cluster_chargeratio",
+  title = "TotalDigis/Cluster Charge ratio Digis",
+  xlabel = "DigisTotalCharge/ClusterCharge",
+  range_min = 0,
+  range_max = 0.1,
+  range_nbins = 20,
+  dimensions = 1,
+
+  specs = VPSet(
+    StandardSpecifications1D,
+    #Specification().groupBy("PXBarrel/PXLayer").save(),
+    #Specification().groupBy("PXForward/PXDisk").save(),
+  )
+)
+
 hltSiPixelPhase1TrackClustersNTracks = hltDefaultHistoTrack.clone(
   name = "ntracks",
   title = "Number of Tracks",
@@ -506,7 +522,7 @@ hltSiPixelPhase1ClustersChargeVsEtaOffTrack = DefaultHistoTrack.clone(
   )
 )
 
-hltSiPixelPhase1ClustersChargeVsSizeOffTrack = DefaultHistoTrack.clone(
+hltSiPixelPhase1ClustersChargeVsSizeOffTrack = hltDefaultHistoTrack.clone(
   name = "Chargevssizey_OffTrack",
   title = "Cluster Charge vs. Cluster Size along Beamline",
   xlabel = "length [pixels]",
@@ -584,6 +600,8 @@ hltSiPixelPhase1TrackClustersConf = cms.VPSet(
    hltSiPixelPhase1DigisHitmapOffTrack,
    hltSiPixelPhase1DigisNdigisOnTrack,
    hltSiPixelPhase1DigisNdigisOffTrack,
+
+   hltSiPixelPhase1TrackClustersDigisOverClusterTotcharge,
 
    hltSiPixelPhase1TrackClustersNTracks,
    hltSiPixelPhase1TrackClustersNTracksInVolume,
