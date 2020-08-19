@@ -63,9 +63,83 @@ SiPixelPhase1TrackClustersOnTrackCharge = DefaultHistoTrack.clone(
   )
 )
 
+SiPixelPhase1TrackClustersOffTrackCharge = DefaultHistoTrack.clone(
+  name = "charge_OffTrack",
+  title = "Corrected Cluster Charge (OffTrack)",
+  range_min = 0, range_max = 80e3, range_nbins = 100,
+  xlabel = "Charge (electrons)",
+
+  specs = VPSet(
+    StandardSpecifications1D,
+    StandardSpecification2DProfile,
+
+    #what is below is only for the timing client
+    Specification(OverlayCurvesForTiming).groupBy("PXBarrel/OnlineBlock")
+         .groupBy("PXBarrel", "EXTEND_Y")
+         .save(),
+    Specification(OverlayCurvesForTiming).groupBy("PXForward/OnlineBlock")
+         .groupBy("PXForward", "EXTEND_Y")
+         .save(),
+
+    Specification().groupBy("PXForward/PXRing").save(),
+
+    Specification(PerModule).groupBy("PXForward/PXRing/Lumisection")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXRing","EXTEND_X")
+                   .save(),
+
+    Specification(IsOffline).groupBy("PXForward/PXRing/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXRing","EXTEND_X")
+                   .save(),
+
+
+    Specification(PerModule).groupBy("PXBarrel/PXLayer/Lumisection")
+                   .reduce("MEAN")
+                   .groupBy("PXBarrel/PXLayer", "EXTEND_X")
+                   .save(),
+
+    Specification(PerModule).groupBy("PXForward/PXDisk/Lumisection")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXDisk", "EXTEND_X")
+                   .save(),
+
+    Specification(IsOffline).groupBy("PXBarrel/PXLayer/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXBarrel/PXLayer", "EXTEND_X")
+                   .save(),
+
+    Specification(IsOffline).groupBy("PXForward/PXDisk/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXDisk", "EXTEND_X")
+                   .save(),
+
+    Specification(OverlayCurvesForTiming).groupBy("PXForward/PXDisk/OnlineBlock") # per-layer with history for online
+                   .groupBy("PXForward/PXDisk", "EXTEND_Y")
+                   .save(),
+    Specification(OverlayCurvesForTiming).groupBy("PXBarrel/PXLayer/OnlineBlock") # per-layer with history for online
+                   .groupBy("PXBarrel/PXLayer", "EXTEND_Y")
+                   .save()
+  )
+)
+
 SiPixelPhase1TrackClustersOnTrackBigPixelCharge = DefaultHistoTrack.clone(
   name = "bigpixelcharge",
   title = "Corrected Big Pixel Charge (OnTrack)",
+  range_min = 0, range_max = 80e3, range_nbins = 100,
+  xlabel = "Charge (electrons)",
+
+  specs = VPSet(
+    Specification().groupBy("PXBarrel").save(),
+    Specification().groupBy("PXForward").save(),
+    Specification().groupBy("PXBarrel/PXLayer").save(),
+    Specification().groupBy("PXForward/PXDisk").save()
+  )
+)
+
+SiPixelPhase1TrackClustersOffTrackBigPixelCharge = DefaultHistoTrack.clone(
+  name = "bigpixelcharge_OffTrack",
+  title = "Corrected Big Pixel Charge (OffTrack)",
   range_min = 0, range_max = 80e3, range_nbins = 100,
   xlabel = "Charge (electrons)",
 
@@ -92,11 +166,158 @@ SiPixelPhase1TrackClustersOnTrackNotBigPixelCharge = DefaultHistoTrack.clone(
   )
 )
 
+SiPixelPhase1TrackClustersOffTrackNotBigPixelCharge = DefaultHistoTrack.clone(
+  name = "notbigpixelcharge_OffTrack",
+  title = "Corrected Not Big Pixel Charge (OffTrack)",
+  range_min = 0, range_max = 80e3, range_nbins = 100,
+  xlabel = "Charge (electrons)",
+  enabled=False,
+
+  specs = VPSet(
+    Specification().groupBy("PXBarrel").save(),
+    Specification().groupBy("PXForward").save(),
+    Specification().groupBy("PXBarrel/PXLayer").save(),
+    Specification().groupBy("PXForward/PXDisk").save()
+  )
+)
+
 SiPixelPhase1TrackClustersOnTrackSize = DefaultHistoTrack.clone(
   name = "size",
   title = "Total Cluster Size (OnTrack)",
   range_min = 0, range_max = 30, range_nbins = 30,
   xlabel = "size[pixels]",
+
+  specs = VPSet(
+        StandardSpecifications1D,
+        StandardSpecification2DProfile,
+
+        Specification().groupBy("PXForward/PXRing").save(),
+
+        Specification(PerModule).groupBy("PXForward/PXRing/Lumisection")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXRing","EXTEND_X")
+                   .save(),
+
+        Specification(IsOffline).groupBy("PXForward/PXRing/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXRing","EXTEND_X")
+                   .save(),
+
+        Specification(PerModule).groupBy("PXBarrel/PXLayer/Lumisection")
+                   .reduce("MEAN")
+                   .groupBy("PXBarrel/PXLayer", "EXTEND_X")
+                   .save(),
+
+        Specification(PerModule).groupBy("PXForward/PXDisk/Lumisection")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXDisk", "EXTEND_X")
+                   .save(),
+
+        Specification(IsOffline).groupBy("PXBarrel/PXLayer/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXBarrel/PXLayer", "EXTEND_X")
+                   .save(),
+
+        Specification(IsOffline).groupBy("PXForward/PXDisk/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXDisk", "EXTEND_X")
+                   .save()
+  )
+)
+
+SiPixelPhase1TrackClustersOffTrackSize = DefaultHistoTrack.clone(
+  name = "size_OffTrack",
+  title = "Total Cluster Size (OffTrack)",
+  range_min = 0, range_max = 30, range_nbins = 30,
+  xlabel = "size_x[pixels]",
+
+  specs = VPSet(
+        StandardSpecifications1D,
+        StandardSpecification2DProfile,
+
+        Specification().groupBy("PXForward/PXRing").save(),
+
+        Specification(PerModule).groupBy("PXForward/PXRing/Lumisection")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXRing","EXTEND_X")
+                   .save(),
+
+        Specification(IsOffline).groupBy("PXForward/PXRing/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXRing","EXTEND_X")
+                   .save(),
+
+        Specification(PerModule).groupBy("PXBarrel/PXLayer/Lumisection")
+                   .reduce("MEAN")
+                   .groupBy("PXBarrel/PXLayer", "EXTEND_X")
+                   .save(),
+
+        Specification(PerModule).groupBy("PXForward/PXDisk/Lumisection")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXDisk", "EXTEND_X")
+                   .save(),
+
+        Specification(IsOffline).groupBy("PXBarrel/PXLayer/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXBarrel/PXLayer", "EXTEND_X")
+                   .save(),
+
+        Specification(IsOffline).groupBy("PXForward/PXDisk/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXDisk", "EXTEND_X")
+                   .save()
+  )
+)
+
+SiPixelPhase1TrackClustersOffTrackSizex = DefaultHistoTrack.clone(
+  name = "sizex_OffTrack",
+  title = "Cluster Size along radial (OffTrack)",
+  range_min = 0, range_max = 30, range_nbins = 30,
+  xlabel = "size_x[pixels]",
+
+  specs = VPSet(
+        StandardSpecifications1D,
+        StandardSpecification2DProfile,
+
+        Specification().groupBy("PXForward/PXRing").save(),
+
+        Specification(PerModule).groupBy("PXForward/PXRing/Lumisection")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXRing","EXTEND_X")
+                   .save(),
+
+        Specification(IsOffline).groupBy("PXForward/PXRing/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXRing","EXTEND_X")
+                   .save(),
+
+        Specification(PerModule).groupBy("PXBarrel/PXLayer/Lumisection")
+                   .reduce("MEAN")
+                   .groupBy("PXBarrel/PXLayer", "EXTEND_X")
+                   .save(),
+
+        Specification(PerModule).groupBy("PXForward/PXDisk/Lumisection")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXDisk", "EXTEND_X")
+                   .save(),
+
+        Specification(IsOffline).groupBy("PXBarrel/PXLayer/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXBarrel/PXLayer", "EXTEND_X")
+                   .save(),
+
+        Specification(IsOffline).groupBy("PXForward/PXDisk/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXDisk", "EXTEND_X")
+                   .save()
+  )
+)
+
+SiPixelPhase1TrackClustersOffTrackSizey = DefaultHistoTrack.clone(
+  name = "sizey_OffTrack",
+  title = "Cluster Size along Beamline (OffTrack)",
+  range_min = 0, range_max = 30, range_nbins = 30,
+  xlabel = "size_y[pixels]",
 
   specs = VPSet(
         StandardSpecifications1D,
@@ -259,10 +480,107 @@ SiPixelPhase1TrackClustersOnTrackNClusters = DefaultHistoTrack.clone(
   )
 )
 
+SiPixelPhase1TrackClustersOffTrackNClusters = DefaultHistoTrack.clone(
+  name = "clusters_OffTrack",
+  title = "Clusters_offTrack",
+  range_min = 0, range_max = 30, range_nbins = 30,
+  xlabel = "clusters",
+  dimensions = 0,
+
+  specs = VPSet(
+
+    StandardSpecificationTrend_Num,
+    StandardSpecification2DProfile_Num,
+
+    Specification().groupBy("PXBarrel/PXLayer/Event") #this will produce inclusive counts per Layer/Disk
+                             .reduce("COUNT")
+                             .groupBy("PXBarrel/PXLayer")
+                             .save(nbins=50, xmin=0, xmax=50000),
+
+    Specification().groupBy("PXForward/PXDisk/Event")
+                             .reduce("COUNT")
+                             .groupBy("PXForward/PXDisk/")
+                             .save(nbins=50, xmin=0, xmax=50000),
+
+    Specification().groupBy("PXBarrel/Event")
+                   .reduce("COUNT")
+                   .groupBy("PXBarrel")
+                   .save(nbins=100, xmin=0, xmax=50000),
+
+    Specification().groupBy("PXForward/Event")
+                   .reduce("COUNT")
+                   .groupBy("PXForward")
+                   .save(nbins=100, xmin=0, xmax=50000),
+
+    Specification().groupBy("PXAll/Event")
+                   .reduce("COUNT")
+                   .groupBy("PXAll")
+                   .save(nbins=100, xmin=0, xmax=50000),
+
+    Specification().groupBy("BX")
+                   .groupBy("", "EXTEND_X").save(),
+
+    Specification(PerModule).groupBy("PXBarrel/PXLayer/Event")
+                   .reduce("COUNT")
+                   .groupBy("PXBarrel/PXLayer/Lumisection")
+                   .reduce("MEAN")
+                   .groupBy("PXBarrel/PXLayer","EXTEND_X")
+                   .save(),
+
+    Specification(PerModule).groupBy("PXForward/PXDisk/Event")
+                   .reduce("COUNT")
+                   .groupBy("PXForward/PXDisk/Lumisection")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXDisk","EXTEND_X")
+                   .save(),
+
+    Specification(IsOffline).groupBy("PXBarrel/PXLayer/Event")
+                   .reduce("COUNT")
+                   .groupBy("PXBarrel/PXLayer/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXBarrel/PXLayer","EXTEND_X")
+                   .save(),
+
+    Specification(IsOffline).groupBy("PXForward/PXDisk/Event")
+                   .reduce("COUNT")
+                   .groupBy("PXForward/PXDisk/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXDisk","EXTEND_X")
+                   .save(),
+
+    #below is for timing client
+    Specification(OverlayCurvesForTiming).groupBy("DetId/Event")
+                    .reduce("COUNT")
+                    .groupBy("PXForward/OnlineBlock")
+                    .groupBy("PXForward", "EXTEND_Y")
+                    .save(),
+
+    Specification(OverlayCurvesForTiming).groupBy("DetId/Event")
+                    .reduce("COUNT")
+                    .groupBy("PXBarrel/OnlineBlock")
+                    .groupBy("PXBarrel", "EXTEND_Y")
+                    .save()
+
+  )
+)
+
 
 SiPixelPhase1TrackClustersOnTrackPositionB = DefaultHistoTrack.clone(
   name = "clusterposition_zphi_ontrack",
   title = "Cluster_onTrack Positions",
+  range_min   =  -60, range_max   =  60, range_nbins   = 300,
+  range_y_min = -3.2, range_y_max = 3.2, range_y_nbins = 200,
+  xlabel = "Global Z", ylabel = "Global \phi",
+  dimensions = 2,
+  specs = VPSet(
+    Specification().groupBy("PXBarrel/PXLayer").save(),
+    Specification().groupBy("").save(),
+  )
+)
+
+SiPixelPhase1TrackClustersOffTrackPositionB = DefaultHistoTrack.clone(
+  name = "clusterposition_zphi_OffTrack",
+  title = "Cluster_offTrack Positions",
   range_min   =  -60, range_max   =  60, range_nbins   = 300,
   range_y_min = -3.2, range_y_max = 3.2, range_y_nbins = 200,
   xlabel = "Global Z", ylabel = "Global \phi",
@@ -285,9 +603,64 @@ SiPixelPhase1TrackClustersOnTrackPositionF = DefaultHistoTrack.clone(
   )
 )
 
+SiPixelPhase1TrackClustersOffTrackPositionF = DefaultHistoTrack.clone(
+  name = "clusterposition_xy_OffTrack",
+  title = "Cluster_offTrack Positions",
+  xlabel = "Global X", ylabel = "Global Y",
+  range_min   = -20, range_max   = 20, range_nbins   = 200,
+  range_y_min = -20, range_y_max = 20, range_y_nbins = 200,
+  dimensions = 2,
+  specs = VPSet(
+    Specification().groupBy("PXForward/PXDisk").save(),
+  )
+)
+
+SiPixelPhase1TrackClustersOffTrackPositionXz = DefaultHistoTrack.clone(
+  name = "clusterposition_xz_OffTrack",
+  title = "Cluster_offTrack Positions",
+  xlabel = "Global X", ylabel = "Global Z",
+  range_min   = -20, range_max   = 20, range_nbins   = 200,
+  range_y_min = -20, range_y_max = 20, range_y_nbins = 200,
+  dimensions = 2,
+  specs = VPSet(
+    Specification().groupBy("PXForward/PXDisk").save(),
+  )
+)
+
+SiPixelPhase1TrackClustersOffTrackPositionYz = DefaultHistoTrack.clone(
+  name = "clusterposition_yz_OffTrack",
+  title = "Cluster_offTrack Positions",
+  xlabel = "Global Y", ylabel = "Global Z",
+  range_min   = -20, range_max   = 20, range_nbins   = 200,
+  range_y_min = -20, range_y_max = 20, range_y_nbins = 200,
+  dimensions = 2,
+  specs = VPSet(
+    Specification().groupBy("PXForward/PXDisk").save(),
+  )
+)
+
+
 SiPixelPhase1DigisHitmapOnTrack = DefaultHistoTrack.clone(
   name = "digi_occupancy_ontrack",
   title = "Digi Occupancy (OnTrack)",
+  ylabel = "#digis",
+  dimensions = 0,
+  specs = VPSet(
+    Specification(PerModule).groupBy("PXBarrel/Shell/PXLayer/SignedLadder/PXModuleName/row/col")
+                            .groupBy("PXBarrel/Shell/PXLayer/SignedLadder/PXModuleName/row", "EXTEND_X")
+                            .groupBy("PXBarrel/Shell/PXLayer/SignedLadder/PXModuleName", "EXTEND_Y")
+                            .save(),
+    Specification(PerModule).groupBy("PXForward/HalfCylinder/PXRing/PXDisk/SignedBlade/PXModuleName/row/col")
+                            .groupBy("PXForward/HalfCylinder/PXRing/PXDisk/SignedBlade/PXModuleName/row", "EXTEND_X")
+                            .groupBy("PXForward/HalfCylinder/PXRing/PXDisk/SignedBlade/PXModuleName", "EXTEND_Y")
+                            .save(),
+    StandardSpecificationOccupancy,
+  )
+)
+
+SiPixelPhase1DigisHitmapOffTrack = DefaultHistoTrack.clone(
+  name = "digi_occupancy_OffTrack",
+  title = "Digi Occupancy (OffTrack)",
   ylabel = "#digis",
   dimensions = 0,
   specs = VPSet(
@@ -307,6 +680,30 @@ SiPixelPhase1DigisNdigisOnTrack = DefaultHistoTrack.clone(
   name = "digis on-track", # 'Count of' added automatically
   title = "Digis on-track",
   xlabel = "digis (on-track)",
+  range_min = 0,
+  range_max = 300,
+  range_nbins = 50,
+  dimensions = 0, # this is a count
+
+  specs = VPSet(
+    StandardSpecificationTrend_Num,
+    StandardSpecification2DProfile_Num,
+	
+    Specification().groupBy("PXBarrel/PXLayer/Event") #this will produce inclusive counts per Layer/Disk
+                             .reduce("COUNT")    
+                             .groupBy("PXBarrel/PXLayer")
+                             .save(nbins=100, xmin=0, xmax=40000),
+    Specification().groupBy("PXForward/PXDisk/Event")
+                             .reduce("COUNT")    
+                             .groupBy("PXForward/PXDisk/")
+                             .save(nbins=100, xmin=0, xmax=20000),
+  )
+)
+
+SiPixelPhase1DigisNdigisOffTrack = DefaultHistoTrack.clone(
+  name = "digis_OffTrack", # 'Count of' added automatically
+  title = "Digis off-track",
+  xlabel = "digis (off-track)",
   range_min = 0,
   range_max = 300,
   range_nbins = 50,
@@ -439,6 +836,7 @@ SiPixelPhase1TrackClustersOnTrackSizeXYF = SiPixelPhase1TrackClustersOnTrackSize
 
 )
 
+
 SiPixelPhase1ClustersChargeVsSizeOnTrack = DefaultHistoTrack.clone(
   name = "chargevssize_on_track",
   title = "Cluster Charge vs. Cluster Size (OnTrack)",
@@ -450,6 +848,45 @@ SiPixelPhase1ClustersChargeVsSizeOnTrack = DefaultHistoTrack.clone(
   specs = VPSet(
     Specification().groupBy("PXBarrel/PXLayer").save(),
     Specification().groupBy("PXForward/PXDisk").save()
+  )
+)
+
+SiPixelPhase1ClustersSizeVsEtaOffTrack = DefaultHistoTrack.clone(
+  name = "sizeyvseta_OffTrack",
+  title = "Cluster Size along Beamline vs. Cluster #eta (OffTrack)",
+  xlabel = "Cluster #eta",
+  ylabel = "length [pixels]",
+  range_min = -3.2, range_max  = 3.2, range_nbins   = 64,
+  range_y_min =  0, range_y_max = 30, range_y_nbins = 15,
+  dimensions = 2,
+  specs = VPSet(
+    Specification().groupBy("PXBarrel/PXLayer").save()
+  )
+)
+
+SiPixelPhase1ClustersChargeVsEtaOffTrack = DefaultHistoTrack.clone(
+  name = "Chargevseta_OffTrack",
+  title = "Cluster Charge vs. Cluster #eta (OffTrack)",
+  xlabel = "Cluster #eta",
+  ylabel = "Cluster Charge",
+  range_min = -3.2, range_max  = 3.2, range_nbins   = 64,
+  range_y_min = 0, range_y_max = 80e3, range_y_nbins = 100,
+  dimensions = 2,
+  specs = VPSet(
+    Specification().groupBy("PXBarrel/PXLayer").save()
+  )
+)
+
+SiPixelPhase1ClustersChargeVsSizeOffTrack = DefaultHistoTrack.clone(
+  name = "Chargevssizey_OffTrack",
+  title = "Cluster Charge vs. Cluster Size along Beamline",
+  xlabel = "length [pixels]",
+  ylabel = "Cluster Charge",
+  range_min =  0, range_max = 30, range_nbins = 15,
+  range_y_min = 0, range_y_max = 80e3, range_y_nbins = 100,
+  dimensions = 2,
+  specs = VPSet(
+    Specification().groupBy("PXBarrel/PXLayer").save()
   )
 )
 
@@ -488,15 +925,35 @@ SiPixelPhase1TrackClustersOnTrackShapeInner = SiPixelPhase1TrackClustersOnTrackS
 # copy this in the enum
 SiPixelPhase1TrackClustersConf = cms.VPSet(
   SiPixelPhase1TrackClustersOnTrackCharge,
+  SiPixelPhase1TrackClustersOffTrackCharge,
   SiPixelPhase1TrackClustersOnTrackBigPixelCharge,
+  SiPixelPhase1TrackClustersOffTrackBigPixelCharge,
   SiPixelPhase1TrackClustersOnTrackNotBigPixelCharge,
+  SiPixelPhase1TrackClustersOffTrackNotBigPixelCharge,
+
   SiPixelPhase1TrackClustersOnTrackSize,
+  SiPixelPhase1TrackClustersOffTrackSize,
+  SiPixelPhase1TrackClustersOffTrackSizex,
+  SiPixelPhase1TrackClustersOffTrackSizey,
   SiPixelPhase1TrackClustersOnTrackShape,
+
   SiPixelPhase1TrackClustersOnTrackNClusters,
+  SiPixelPhase1TrackClustersOffTrackNClusters,
+
   SiPixelPhase1TrackClustersOnTrackPositionB,
+  SiPixelPhase1TrackClustersOffTrackPositionB,
   SiPixelPhase1TrackClustersOnTrackPositionF,
+  SiPixelPhase1TrackClustersOffTrackPositionF,
+  SiPixelPhase1TrackClustersOffTrackPositionXz,
+  SiPixelPhase1TrackClustersOffTrackPositionYz,
+
   SiPixelPhase1DigisHitmapOnTrack,
+  SiPixelPhase1DigisHitmapOffTrack,
   SiPixelPhase1DigisNdigisOnTrack,
+  SiPixelPhase1DigisNdigisOffTrack,
+
+  #SiPixelPhase1TrackClustersOffTrackReadoutCharge,
+  #SiPixelPhase1TrackClustersOffTrackReadoutNClusters,
 
   SiPixelPhase1TrackClustersNTracks,
   SiPixelPhase1TrackClustersNTracksInVolume,
@@ -519,7 +976,11 @@ SiPixelPhase1TrackClustersConf = cms.VPSet(
   SiPixelPhase1TrackClustersOnTrackSizeXYOuter,
   SiPixelPhase1TrackClustersOnTrackSizeXYInner,
   SiPixelPhase1TrackClustersOnTrackSizeXYF,
-  SiPixelPhase1ClustersChargeVsSizeOnTrack
+  SiPixelPhase1ClustersChargeVsSizeOnTrack,
+  SiPixelPhase1ClustersSizeVsEtaOffTrack,
+  SiPixelPhase1ClustersChargeVsEtaOffTrack,
+  SiPixelPhase1ClustersChargeVsSizeOffTrack,
+ 
 )
 
 from DQMServices.Core.DQMEDAnalyzer import DQMEDAnalyzer

@@ -14,12 +14,14 @@
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/SiPixelDigi/interface/PixelDigi.h"
+#include "DataFormats/Common/interface/Handle.h"
+#include "DataFormats/DetId/interface/DetId.h"
 
 #include "DataFormats/SiPixelCluster/interface/SiPixelClusterShapeCache.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/Framework/interface/ESHandle.h"
-
+#include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/Utilities/interface/ESGetToken.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
@@ -72,8 +74,6 @@ namespace {
 
 
       //OFF_TRACK_READOUT_CHARGE,
-
-
       //OFF_TRACK_READOUT_NCLUSTERS,
       
       NTRACKS,
@@ -113,6 +113,7 @@ namespace {
 
   private:
     const bool applyVertexCut_;
+    edm::InputTag src_; 
 
     edm::EDGetTokenT<reco::TrackCollection> tracksToken_;
     edm::EDGetTokenT<reco::VertexCollection> offlinePrimaryVerticesToken_;
@@ -135,6 +136,10 @@ namespace {
         consumes<SiPixelClusterShapeCache>(iConfig.getParameter<edm::InputTag>("clusterShapeCache"));
 
     pixelSrcToken_ = consumes<edmNew::DetSetVector<SiPixelCluster>>(iConfig.getParameter<edm::InputTag>("clusters"));
+
+    //src_ =  iConfighttps://github.com/cms-analysis/DPGAnalysis-SiPixelTools/blob/master/HitAnalyzer/test/PixDigisTest.cc#L1132.getParameter<edm::InputTag>( "src" );
+    //tPixelDigi =
+      consumes<edm::DetSetVector<PixelDigi>>(iConfig.getParameter<edm::InputTag>("src"));
   }
 
   void SiPixelPhase1TrackClusters::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
