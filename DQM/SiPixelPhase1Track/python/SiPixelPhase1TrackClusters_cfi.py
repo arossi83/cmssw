@@ -989,6 +989,7 @@ SiPixelPhase1TrackClustersAnalyzer = DQMEDAnalyzer('SiPixelPhase1TrackClusters',
         clusterShapeCache = cms.InputTag("siPixelClusterShapeCache"),
         tracks = cms.InputTag("generalTracks"),
         vertices = cms.InputTag("offlinePrimaryVertices"),
+        src = cms.InputTag("siPixelDigis"),
         histograms = SiPixelPhase1TrackClustersConf,
         geometry = SiPixelPhase1Geometry,
         triggerflags = trigger.SiPixelPhase1Triggers

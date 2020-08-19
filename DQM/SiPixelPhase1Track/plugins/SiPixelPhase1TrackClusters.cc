@@ -138,7 +138,7 @@ namespace {
     pixelSrcToken_ = consumes<edmNew::DetSetVector<SiPixelCluster>>(iConfig.getParameter<edm::InputTag>("clusters"));
 
     //src_ =  iConfighttps://github.com/cms-analysis/DPGAnalysis-SiPixelTools/blob/master/HitAnalyzer/test/PixDigisTest.cc#L1132.getParameter<edm::InputTag>( "src" );
-    //tPixelDigi =
+    tPixelDigi =
       consumes<edm::DetSetVector<PixelDigi>>(iConfig.getParameter<edm::InputTag>("src"));
   }
 
@@ -375,6 +375,13 @@ namespace {
 	int row = cluster.x() - 0.5, col = cluster.y() - 0.5;
 	const std::vector<SiPixelCluster::Pixel> pixelsVec = cluster.pixels();
         for (unsigned int i = 0; i < pixelsVec.size(); ++i) {
+	  cout << endl << i;
+	  /*
+	  if(i > 0){
+	    cout << endl << "exit" << endl;
+	    break;
+	  }
+	  */
           float pixx = pixelsVec[i].x;  // index as float=iteger, row index
           float pixy = pixelsVec[i].y;  // same, col index
 	  float intADC = pixelsVec[i].adc; // this is calibrated charge
@@ -382,7 +389,16 @@ namespace {
 	  for(DSViter = pixelDigis->begin(); DSViter != pixelDigis->end(); DSViter++) {
 	    edm::DetSet<PixelDigi>::const_iterator di;
 	    for(di = DSViter->data.begin(); di != DSViter->data.end(); di++) {
-	      cout << "digis adc: " << di->adc();
+	      float digADC = di->adc(); // charge, modifued to unsiged short
+	      float digx = di->row(); // row
+	      float digy = di->column(); // column
+	      if(digx == pixx && digy == pixy){
+		cout << endl << "pix adc: " << intADC << "\tdig adc: " << digADC << endl;
+		cout << "pix x: " << pixx << "\tdig x: " << digx << endl;
+		cout << "pix y: " << pixy << "\tdig y: " << digy << endl;
+		//break;
+	      }
+	      else continue;
 	    }
 	  }
 
