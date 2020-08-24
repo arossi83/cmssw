@@ -73,6 +73,7 @@ namespace {
       OFF_TRACK_NDIGIS,
 
       DIGIS_OVER_CLUSTER_TOTCHARGE,
+      DIGIS_OVER_CLUSTER_TOTCHARGE_2D,
 
       //OFF_TRACK_READOUT_CHARGE,
       //OFF_TRACK_READOUT_NCLUSTERS,
@@ -248,7 +249,15 @@ namespace {
 	const SiPixelCluster* rHcluster = &*(pixhit->cluster());
 
 	rHSiPixelClusters.insert(rHcluster);
-	
+
+	edm::Handle< edm::DetSetVector<PixelDigi> > pixelDigis;
+	iEvent.getByToken(tPixelDigi, pixelDigis);
+
+	edmNew::DetSetVector<SiPixelCluster>::const_iterator it;
+	edm::DetSetVector<PixelDigi>::const_iterator DSViter;
+
+	float total_digADC = 0.;
+
 	//std::cout << "rHcluster inserted" << endl;
         const std::vector<SiPixelCluster::Pixel> pixelsVec = cluster.pixels();
         for (unsigned int i = 0; i < pixelsVec.size(); ++i) {
@@ -259,12 +268,38 @@ namespace {
           bool bigInY = topol.isItBigPixelInY(int(pixy));// dip solo da pixel
           float pixel_charge = pixelsVec[i].adc;
 
+ 	  for(DSViter = pixelDigis->begin(); DSViter != pixelDigis->end(); DSViter++) {
+	    edm::DetSet<PixelDigi>::const_iterator di;
+	    for(di = DSViter->data.begin(); di != DSViter->data.end(); di++) {
+	      float digADC = di->adc(); // charge, modifued to unsiged short
+	      float digx = di->row(); // row
+	      float digy = di->column(); // column
+	      if(digx == pixx && digy == pixy){
+		total_digADC = total_digADC + digADC;
+		cout << endl << "pix adc: " << pixel_charge << "\tdig adc: " << digADC << endl;
+		//cout << "pix x: " << pixx << "\tdig x: " << digx << endl;
+		//cout << "pix y: " << pixy << "\tdig y: " << digy << endl;
+	      }
+	      else continue;
+	    }
+	  }
+	  cout << endl << "total digis adc so far: " << total_digADC << endl;
+         
+
           if (bigInX == true || bigInY == true) {//si potrebbe fare a parte
             histo[ON_TRACK_BIGPIXELCHARGE].fill(pixel_charge, id, &iEvent); 
           } else {
             histo[ON_TRACK_NOTBIGPIXELCHARGE].fill(pixel_charge, id, &iEvent);
           }
         }  // End loop over pixels
+
+	float digiscluster_ratio = cluster.charge() / total_digADC;
+
+	histo[DIGIS_OVER_CLUSTER_TOTCHARGE].fill(digiscluster_ratio, id, &iEvent); 
+	histo[DIGIS_OVER_CLUSTER_TOTCHARGE_2D].fill(cluster.charge(), total_digADC, id, &iEvent); 
+
+	cout << endl << "cluster charge: " << cluster.charge() << "\ttotal digi adc: " << total_digADC << endl;
+
         auto const& ltp = trajParams[h];
 
         auto localDir = ltp.momentum() / ltp.momentum().mag();
@@ -356,12 +391,8 @@ namespace {
       return;
 
     bool hasClusters = false;
-    
-    edm::Handle< edm::DetSetVector<PixelDigi> > pixelDigis;
-    iEvent.getByToken(tPixelDigi, pixelDigis);
 
-    edmNew::DetSetVector<SiPixelCluster>::const_iterator it;
-    edm::DetSetVector<PixelDigi>::const_iterator DSViter;
+    edmNew::DetSetVector<SiPixelCluster>::const_iterator it;    
 
     for (it = inputPixel->begin(); it != inputPixel->end(); ++it) {
       auto id = DetId(it->detId());
@@ -373,11 +404,12 @@ namespace {
 	if (!(rHSiPixelClusters.find(&cluster) == rHSiPixelClusters.end())) continue;
 	std::cout << "Off track" << std::endl;
 
-	float total_digADC = 0.;
-
 	int row = cluster.x() - 0.5, col = cluster.y() - 0.5;
 	const std::vector<SiPixelCluster::Pixel> pixelsVec = cluster.pixels();
         for (unsigned int i = 0; i < pixelsVec.size(); ++i) {
+          float pixx = pixelsVec[i].x;  // index as float=iteger, row index
+          float pixy = pixelsVec[i].y;  // same, col index
+
 	  cout << endl << i;
 	  /*
 	  if(i > 0){
@@ -385,27 +417,6 @@ namespace {
 	    break;
 	  }
 	  */
-          float pixx = pixelsVec[i].x;  // index as float=iteger, row index
-          float pixy = pixelsVec[i].y;  // same, col index
-	  float intADC = pixelsVec[i].adc; // this is calibrated charge
-
-	  for(DSViter = pixelDigis->begin(); DSViter != pixelDigis->end(); DSViter++) {
-	    edm::DetSet<PixelDigi>::const_iterator di;
-	    for(di = DSViter->data.begin(); di != DSViter->data.end(); di++) {
-	      float digADC = di->adc(); // charge, modifued to unsiged short
-	      float digx = di->row(); // row
-	      float digy = di->column(); // column
-	      if(digx == pixx && digy == pixy){
-		total_digADC = total_digADC + digADC;
-		cout << endl << "pix adc: " << intADC << "\tdig adc: " << digADC << endl;
-		//cout << "pix x: " << pixx << "\tdig x: " << digx << endl;
-		//cout << "pix y: " << pixy << "\tdig y: " << digy << endl;
-		//break;
-	      }
-	      else continue;
-	    }
-	  }
-	  cout << endl << "total digis adc so far: " << total_digADC << endl;
           bool bigInX = topol.isItBigPixelInX(int(pixx)); // dip solo da pixel
           bool bigInY = topol.isItBigPixelInY(int(pixy));// dip solo da pixel
           float pixel_charge = pixelsVec[i].adc;
@@ -420,12 +431,6 @@ namespace {
           }
         }  // End loop over pixels
 	
-	float digiscluster_ratio = cluster.charge() / total_digADC;
-
-	histo[DIGIS_OVER_CLUSTER_TOTCHARGE].fill(digiscluster_ratio, id, &iEvent); 
-
-	cout << endl << "cluster charge: " << cluster.charge() << "\ttotal digi adc: " << total_digADC << endl;
-
 	for (int i = 0; i < cluster.size(); i++) {
           SiPixelCluster::Pixel const& vecipxl = cluster.pixel(i);
           histo[DIGIS_HITMAP_OFF_TRACK].fill(id, &iEvent, vecipxl.y, vecipxl.x);

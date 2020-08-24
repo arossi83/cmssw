@@ -360,14 +360,31 @@ hltSiPixelPhase1TrackClustersDigisOverClusterTotcharge = hltDefaultHistoTrack.cl
   title = "TotalDigis/Cluster Charge ratio Digis",
   xlabel = "DigisTotalCharge/ClusterCharge",
   range_min = 0,
-  range_max = 0.1,
-  range_nbins = 20,
+  range_max = 100,
+  range_nbins = 100,
   dimensions = 1,
 
   specs = VPSet(
     StandardSpecifications1D,
     #Specification().groupBy("PXBarrel/PXLayer").save(),
     #Specification().groupBy("PXForward/PXDisk").save(),
+  )
+)
+
+hltSiPixelPhase1TrackClustersDigisOverClusterTotcharge2D = hltDefaultHistoTrack.clone(
+  name = "total_digis_charge_vs_cluster_charge",
+  title = "TotalDigis Charge ratio vs Cluster Charge",
+  ylabel = "Digis Total Charge",
+  xlabel = "Cluster Charge",
+  range_y_min = 0,
+  range_y_max = 100,
+  range_y_nbins = 100,
+  range_min = 0, range_max = 80e3, range_nbins = 100,
+  dimensions = 2,
+
+  specs = VPSet(
+    Specification().groupBy("PXBarrel/PXLayer").save(),
+    Specification().groupBy("PXForward/PXDisk").save()
   )
 )
 
