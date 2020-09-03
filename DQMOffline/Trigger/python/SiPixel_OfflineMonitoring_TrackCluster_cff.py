@@ -354,7 +354,7 @@ hltSiPixelPhase1DigisNdigisOffTrack = hltDefaultHistoTrack.clone(
   )
 )
 
-
+'''
 hltSiPixelPhase1TrackClustersDigisOverClusterTotcharge = hltDefaultHistoTrack.clone(
   name = "digis_cluster_chargeratio",
   title = "TotalDigis/Cluster Charge ratio Digis",
@@ -387,6 +387,7 @@ hltSiPixelPhase1TrackClustersDigisOverClusterTotcharge2D = hltDefaultHistoTrack.
     Specification().groupBy("PXForward/PXDisk").save()
   )
 )
+'''
 
 hltSiPixelPhase1TrackClustersNTracks = hltDefaultHistoTrack.clone(
   name = "ntracks",
@@ -618,7 +619,8 @@ hltSiPixelPhase1TrackClustersConf = cms.VPSet(
    hltSiPixelPhase1DigisNdigisOnTrack,
    hltSiPixelPhase1DigisNdigisOffTrack,
 
-   hltSiPixelPhase1TrackClustersDigisOverClusterTotcharge,
+   #hltSiPixelPhase1TrackClustersDigisOverClusterTotcharge,
+    #hltSiPixelPhase1TrackClustersDigisOverClusterTotcharge2D,
 
    hltSiPixelPhase1TrackClustersNTracks,
    hltSiPixelPhase1TrackClustersNTracksInVolume,

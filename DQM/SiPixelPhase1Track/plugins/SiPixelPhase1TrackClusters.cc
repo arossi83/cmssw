@@ -73,7 +73,7 @@ namespace {
       OFF_TRACK_NDIGIS,
 
       //DIGIS_OVER_CLUSTER_TOTCHARGE,
-      DIGIS_OVER_CLUSTER_TOTCHARGE_2D,
+      //DIGIS_OVER_CLUSTER_TOTCHARGE_2D,
 
       //OFF_TRACK_READOUT_CHARGE,
       //OFF_TRACK_READOUT_NCLUSTERS,
@@ -249,15 +249,14 @@ namespace {
 	const SiPixelCluster* rHcluster = &*(pixhit->cluster());
 
 	rHSiPixelClusters.insert(rHcluster);
-
+	/*
 	edm::Handle< edm::DetSetVector<PixelDigi> > pixelDigis;
 	iEvent.getByToken(tPixelDigi, pixelDigis);
 
-	edmNew::DetSetVector<SiPixelCluster>::const_iterator it;
 	edm::DetSetVector<PixelDigi>::const_iterator DSViter;
 
 	float total_digADC = 0.;
-
+	*/
 	//std::cout << "rHcluster inserted" << endl;
         const std::vector<SiPixelCluster::Pixel> pixelsVec = cluster.pixels();
         for (unsigned int i = 0; i < pixelsVec.size(); ++i) {
@@ -267,7 +266,7 @@ namespace {
           bool bigInX = topol.isItBigPixelInX(int(pixx)); // dip solo da pixel
           bool bigInY = topol.isItBigPixelInY(int(pixy));// dip solo da pixel
           float pixel_charge = pixelsVec[i].adc;
-
+	  /*
  	  for(DSViter = pixelDigis->begin(); DSViter != pixelDigis->end(); DSViter++) {
 	    edm::DetSet<PixelDigi>::const_iterator di;
 	    for(di = DSViter->data.begin(); di != DSViter->data.end(); di++) {
@@ -284,7 +283,7 @@ namespace {
 	    }
 	  }
 	  cout << endl << "total digis adc so far: " << total_digADC << endl;
-         
+	  */
 
           if (bigInX == true || bigInY == true) {//si potrebbe fare a parte
             histo[ON_TRACK_BIGPIXELCHARGE].fill(pixel_charge, id, &iEvent); 
@@ -293,12 +292,12 @@ namespace {
           }
         }  // End loop over pixels
 
-	float digiscluster_ratio = cluster.charge() / total_digADC;
+	//float digiscluster_ratio = cluster.charge() / total_digADC;
 
-	histo[DIGIS_OVER_CLUSTER_TOTCHARGE].fill(digiscluster_ratio, id, &iEvent); 
-	histo[DIGIS_OVER_CLUSTER_TOTCHARGE_2D].fill(cluster.charge(), total_digADC, id, &iEvent); 
+	//histo[DIGIS_OVER_CLUSTER_TOTCHARGE].fill(digiscluster_ratio, id, &iEvent); 
+	//histo[DIGIS_OVER_CLUSTER_TOTCHARGE_2D].fill(cluster.charge(), total_digADC, id, &iEvent); 
 
-	cout << endl << "cluster charge: " << cluster.charge() << "\ttotal digi adc: " << total_digADC << endl;
+	//cout << endl << "cluster charge: " << cluster.charge() << "\ttotal digi adc: " << total_digADC << endl;
 
         auto const& ltp = trajParams[h];
 
