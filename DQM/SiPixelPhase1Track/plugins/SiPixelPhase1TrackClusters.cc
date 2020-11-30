@@ -38,7 +38,6 @@
 #include "RecoTracker/Record/interface/CkfComponentsRecord.h"
 #include "RecoPixelVertexing/PixelLowPtUtilities/interface/ClusterShapeHitFilter.h"
 
-#include <iostream>
 
 namespace {
 
@@ -257,7 +256,6 @@ namespace {
 
 	float total_digADC = 0.;
 	*/
-	//std::cout << "rHcluster inserted" << endl;
         const std::vector<SiPixelCluster::Pixel> pixelsVec = cluster.pixels();
         for (unsigned int i = 0; i < pixelsVec.size(); ++i) {
           float pixx = pixelsVec[i].x;  // index as float=iteger, row index
@@ -275,14 +273,10 @@ namespace {
 	      float digy = di->column(); // column
 	      if(digx == pixx && digy == pixy){
 		total_digADC = total_digADC + digADC;
-		cout << endl << "pix adc: " << pixel_charge << "\tdig adc: " << digADC << endl;
-		//cout << "pix x: " << pixx << "\tdig x: " << digx << endl;
-		//cout << "pix y: " << pixy << "\tdig y: " << digy << endl;
 	      }
 	      else continue;
 	    }
 	  }
-	  cout << endl << "total digis adc so far: " << total_digADC << endl;
 	  */
 
           if (bigInX == true || bigInY == true) {//si potrebbe fare a parte
@@ -297,7 +291,6 @@ namespace {
 	//histo[DIGIS_OVER_CLUSTER_TOTCHARGE].fill(digiscluster_ratio, id, &iEvent); 
 	//histo[DIGIS_OVER_CLUSTER_TOTCHARGE_2D].fill(cluster.charge(), total_digADC, id, &iEvent); 
 
-	//cout << endl << "cluster charge: " << cluster.charge() << "\ttotal digi adc: " << total_digADC << endl;
 
         auto const& ltp = trajParams[h];
 
@@ -401,7 +394,6 @@ namespace {
 
       for (SiPixelCluster const& cluster : *it) {
 	if (!(rHSiPixelClusters.find(&cluster) == rHSiPixelClusters.end())) continue;
-	std::cout << "Off track" << std::endl;
 
 	int row = cluster.x() - 0.5, col = cluster.y() - 0.5;
 	const std::vector<SiPixelCluster::Pixel> pixelsVec = cluster.pixels();
@@ -409,24 +401,15 @@ namespace {
           float pixx = pixelsVec[i].x;  // index as float=iteger, row index
           float pixy = pixelsVec[i].y;  // same, col index
 
-	  cout << endl << i;
-	  /*
-	  if(i > 0){
-	    cout << endl << "exit" << endl;
-	    break;
-	  }
-	  */
           bool bigInX = topol.isItBigPixelInX(int(pixx)); // dip solo da pixel
           bool bigInY = topol.isItBigPixelInY(int(pixy));// dip solo da pixel
           float pixel_charge = pixelsVec[i].adc;
 
           if (bigInX == true || bigInY == true) {//si potrebbe fare a parte
             histo[OFF_TRACK_BIGPIXELCHARGE].fill(pixel_charge, id, &iEvent); 
-	    std::cout << "BigPixel charge plotted" << std::endl;
           } 
 	  else {
             histo[OFF_TRACK_NOTBIGPIXELCHARGE].fill(pixel_charge, id, &iEvent);
-	    std::cout << "NotBigPixel charge plotted" << std::endl;
           }
         }  // End loop over pixels
 	
