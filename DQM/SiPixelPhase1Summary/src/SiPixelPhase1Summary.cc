@@ -203,6 +203,56 @@ void SiPixelPhase1Summary::bookSummaries(DQMStore::IBooker& iBooker) {
                        100,
                        0.,
                        rms_range);
+    ///Normalized Resiuduals Plots
+    DRnR_["DRnR_mean_x_Inner_PXLayer_" + layer] =
+        iBooker.book1D("DRnR_mean_x_Inner_PXLayer_" + layer,
+                       "Mean Track Residuals X Inner Modules for Layer " + layer + ";mean((x_rec-x_pred)/x_err)",
+                       100,
+                       -1 * 5,
+                       5);
+    DRnR_["DRnR_mean_x_Outer_PXLayer_" + layer] =
+        iBooker.book1D("DRnR_mean_x_Outer_PXLayer_" + layer,
+                       "Mean Track Residuals X Outer Modules for Layer " + layer + ";mean((x_rec-x_pred)/x_err)",
+                       100,
+                       -1 * 5,
+                       5);
+    DRnR_["DRnR_mean_y_Inner_PXLayer_" + layer] =
+        iBooker.book1D("DRnR_mean_y_Inner_PXLayer_" + layer,
+                       "Mean Track Residuals Y Inner Modules for Layer " + layer + ";mean((y_rec-y_pred)/y_err)",
+                       100,
+                       -1 * 5,
+                       5);
+    DRnR_["DRnR_mean_y_Outer_PXLayer_" + layer] =
+        iBooker.book1D("DRnR_mean_y_Outer_PXLayer_" + layer,
+                       "Mean Track Residuals Y Outer Modules for Layer " + layer + ";mean((y_rec-y_pred)/y_err)",
+                       100,
+                       -1 * 5,
+                       5);
+
+    DRnR_["DRnR_rms_x_Inner_PXLayer_" + layer] =
+        iBooker.book1D("DRnR_rms_x_Inner_PXLayer_" + layer,
+                       "RMS of Track Residuals X Inner Modules for Layer " + layer + ";rms((x_rec-x_pred)/x_err)",
+                       100,
+                       0.,
+                       5);
+    DRnR_["DRnR_rms_x_Outer_PXLayer_" + layer] =
+        iBooker.book1D("DRnR_rms_x_Outer_PXLayer_" + layer,
+                       "RMS of Track Residuals X Outer Modules for Layer " + layer + ";rms((x_rec-x_pred)/x_err)",
+                       100,
+                       0.,
+                       5);
+    DRnR_["DRnR_rms_y_Inner_PXLayer_" + layer] =
+        iBooker.book1D("DRnR_rms_y_Inner_PXLayer_" + layer,
+                       "RMS of Track Residuals Y Inner Modules for Layer " + layer + ";rms((y_rec-y_pred)/y_err)",
+                       100,
+                       0.,
+                       5);
+    DRnR_["DRnR_rms_y_Outer_PXLayer_" + layer] =
+        iBooker.book1D("DRnR_rms_y_Outer_PXLayer_" + layer,
+                       "RMS of Track Residuals Y Outer Modules for Layer " + layer + ";rms((y_rec-y_pred)/y_err)",
+                       100,
+                       0.,
+                       5);
   }
 
   //New residual plots for the PXForward separated by inner and outer modules
@@ -224,6 +274,24 @@ void SiPixelPhase1Summary::bookSummaries(DQMStore::IBooker& iBooker) {
       "residual_rms_y_Inner", "RMS of Track Residuals Y Inner Modules;rms(y_rec-y_pred)[#mum]", 100, 0., 200.);
   residuals_["residual_rms_y_Outer"] = iBooker.book1D(
       "residual_rms_y_Outer", "RMS of Track Residuals Y Outer Modules;rms(y_rec-y_pred)[#mum]", 100, 0., 200.);
+  //Normalize Residuals inner/outer
+  DRnR_["DRnR_mean_x_Inner"] = iBooker.book1D(
+      "DRnR_mean_x_Inner", "Mean Track Residuals X Inner Modules;mean((x_rec-x_pred)/x_err)", 100, -5., 5.);
+  DRnR_["DRnR_mean_x_Outer"] = iBooker.book1D(
+      "DRnR_mean_x_Outer", "Mean Track Residuals X Outer Modules;mean((x_rec-x_pred)/x_err)", 100, -5., 5.);
+  DRnR_["DRnR_mean_y_Inner"] = iBooker.book1D(
+      "DRnR_mean_y_Inner", "Mean Track Residuals Y Inner Modules;mean((y_rec-y_pred)/y_err)", 100, -5., 5.);
+  DRnR_["DRnR_mean_y_Outer"] = iBooker.book1D(
+      "DRnR_mean_y_Outer", "Mean Track Residuals Y Outer Modules;mean((y_rec-y_pred)/y_err)", 100, -5., 5.);
+
+  DRnR_["DRnR_rms_x_Inner"] = iBooker.book1D(
+      "DRnR_rms_x_Inner", "RMS of Track Residuals X Inner Modules;rms((x_rec-x_pred)/x_err)", 100, 0., 5.);
+  DRnR_["DRnR_rms_x_Outer"] = iBooker.book1D(
+      "DRnR_rms_x_Outer", "RMS of Track Residuals X Outer Modules;rms((x_rec-x_pred)/x_err)", 100, 0., 5.);
+  DRnR_["DRnR_rms_y_Inner"] = iBooker.book1D(
+      "DRnR_rms_y_Inner", "RMS of Track Residuals Y Inner Modules;rms((y_rec-y_pred)/y_err)", 100, 0., 5.);
+  DRnR_["DRnR_rms_y_Outer"] = iBooker.book1D(
+      "DRnR_rms_y_Outer", "RMS of Track Residuals Y Outer Modules;rms((y_rec-y_pred)/y_err)", 100, 0., 5.);
 
   //New residual plots for the PXForward separated by positive and negative side
   iBooker.setCurrentFolder("PixelPhase1/Tracks/PXForward");
@@ -244,6 +312,24 @@ void SiPixelPhase1Summary::bookSummaries(DQMStore::IBooker& iBooker) {
       iBooker.book1D("residual_rms_y_pos", "RMS of Track Residuals Y pos. Side;rms(y_rec-y_pred)[#mum]", 100, 0., 200.);
   residuals_["residual_rms_y_neg"] =
       iBooker.book1D("residual_rms_y_neg", "RMS of Track Residuals Y neg. Side;rms(y_rec-y_pred)[#mum]", 100, 0., 200.);
+  //Normalized Residuals pos/neg
+  DRnR_["DRnR_mean_x_pos"] = iBooker.book1D(
+      "DRnR_mean_x_pos", "Mean Track Residuals X pos. Side;mean((x_rec-x_pred)/x_err)", 100, -5., 5.);
+  DRnR_["DRnR_mean_x_neg"] = iBooker.book1D(
+      "DRnR_mean_x_neg", "Mean Track Residuals X neg. Side;mean((x_rec-x_pred)/x_err)", 100, -5., 5.);
+  DRnR_["DRnR_mean_y_pos"] = iBooker.book1D(
+      "DRnR_mean_y_pos", "Mean Track Residuals Y pos. Side;mean((y_rec-y_pred)/y_err)", 100, -5., 5.);
+  DRnR_["DRnR_mean_y_neg"] = iBooker.book1D(
+      "DRnR_mean_y_neg", "Mean Track Residuals Y neg. Side;mean((y_rec-y_pred)/y_err)", 100, -5., 5.);
+
+  DRnR_["DRnR_rms_x_pos"] =
+      iBooker.book1D("DRnR_rms_x_pos", "RMS of Track Residuals X pos. Side;rms((x_rec-x_pred)/x_err)", 100, 0., 5.);
+  DRnR_["DRnR_rms_x_neg"] =
+      iBooker.book1D("DRnR_rms_x_neg", "RMS of Track Residuals X neg. Side;rms((x_rec-x_pred)/x_err)", 100, 0., 5.);
+  DRnR_["DRnR_rms_y_pos"] =
+      iBooker.book1D("DRnR_rms_y_pos", "RMS of Track Residuals Y pos. Side;rms((y_rec-y_pred)/y_err)", 100, 0., 5.);
+  DRnR_["DRnR_rms_y_neg"] =
+      iBooker.book1D("DRnR_rms_y_neg", "RMS of Track Residuals Y neg. Side;rms((y_rec-y_pred)/y_err)", 100, 0., 5.);
 
   //Book the summary plot
   iBooker.setCurrentFolder("PixelPhase1/EventInfo");
@@ -394,6 +480,10 @@ void SiPixelPhase1Summary::fillSummaries(DQMStore::IBooker& iBooker, DQMStore::I
         iGetter.get("PixelPhase1/Tracks/PXBarrel/residual_x_per_SignedModule_per_SignedLadder_PXLayer_" + layer);
     MonitorElement* me_y =
         iGetter.get("PixelPhase1/Tracks/PXBarrel/residual_y_per_SignedModule_per_SignedLadder_PXLayer_" + layer);
+    MonitorElement* me2_x =
+        iGetter.get("PixelPhase1/Tracks/PXBarrel/DRnR_x_per_SignedModule_per_SignedLadder_PXLayer_" + layer);
+    MonitorElement* me2_y =
+        iGetter.get("PixelPhase1/Tracks/PXBarrel/DRnR_y_per_SignedModule_per_SignedLadder_PXLayer_" + layer);
 
     for (int i = 1; i <= me_x->getNbinsY(); i++) {
       if (i == (me_x->getNbinsY() / 2 + 1))
@@ -409,6 +499,10 @@ void SiPixelPhase1Summary::fillSummaries(DQMStore::IBooker& iBooker, DQMStore::I
             residuals_["residual_mean_y_Inner_PXLayer_" + layer]->Fill(me_y->getBinContent(j, i) * 1e4);
             residuals_["residual_rms_x_Inner_PXLayer_" + layer]->Fill(me_x->getBinError(j, i) * 1e4);
             residuals_["residual_rms_y_Inner_PXLayer_" + layer]->Fill(me_y->getBinError(j, i) * 1e4);
+            DRnR_["DRnR_mean_x_Inner_PXLayer_" + layer]->Fill(me2_x->getBinContent(j, i));
+            DRnR_["DRnR_mean_y_Inner_PXLayer_" + layer]->Fill(me2_y->getBinContent(j, i));
+            DRnR_["DRnR_rms_x_Inner_PXLayer_" + layer]->Fill(me2_x->getBinError(j, i));
+            DRnR_["DRnR_rms_y_Inner_PXLayer_" + layer]->Fill(me2_y->getBinError(j, i));
           }
         } else {
           for (int j : {1, 2, 3, 4, 6, 7, 8, 9}) {
@@ -418,6 +512,11 @@ void SiPixelPhase1Summary::fillSummaries(DQMStore::IBooker& iBooker, DQMStore::I
             residuals_["residual_mean_y_Outer_PXLayer_" + layer]->Fill(me_y->getBinContent(j, i) * 1e4);
             residuals_["residual_rms_x_Outer_PXLayer_" + layer]->Fill(me_x->getBinError(j, i) * 1e4);
             residuals_["residual_rms_y_Outer_PXLayer_" + layer]->Fill(me_y->getBinError(j, i) * 1e4);
+            DRnR_["DRnR_mean_x_Outer_PXLayer_" + layer]->Fill(me2_x->getBinContent(j, i));
+            DRnR_["DRnR_mean_y_Outer_PXLayer_" + layer]->Fill(me2_y->getBinContent(j, i));
+            DRnR_["DRnR_rms_x_Outer_PXLayer_" + layer]->Fill(me2_x->getBinError(j, i));
+            DRnR_["DRnR_rms_y_Outer_PXLayer_" + layer]->Fill(me2_y->getBinError(j, i));
+
           }
         }
       } else {
@@ -430,6 +529,11 @@ void SiPixelPhase1Summary::fillSummaries(DQMStore::IBooker& iBooker, DQMStore::I
             residuals_["residual_mean_y_Inner_PXLayer_" + layer]->Fill(me_y->getBinContent(j, i) * 1e4);
             residuals_["residual_rms_x_Inner_PXLayer_" + layer]->Fill(me_x->getBinError(j, i) * 1e4);
             residuals_["residual_rms_y_Inner_PXLayer_" + layer]->Fill(me_y->getBinError(j, i) * 1e4);
+            DRnR_["DRnR_mean_x_Inner_PXLayer_" + layer]->Fill(me2_x->getBinContent(j, i));
+            DRnR_["DRnR_mean_y_Inner_PXLayer_" + layer]->Fill(me2_y->getBinContent(j, i));
+            DRnR_["DRnR_rms_x_Inner_PXLayer_" + layer]->Fill(me2_x->getBinError(j, i));
+            DRnR_["DRnR_rms_y_Inner_PXLayer_" + layer]->Fill(me2_y->getBinError(j, i));
+
           }
         } else {
           for (int j : {1, 2, 3, 4, 6, 7, 8, 9}) {
@@ -439,6 +543,10 @@ void SiPixelPhase1Summary::fillSummaries(DQMStore::IBooker& iBooker, DQMStore::I
             residuals_["residual_mean_y_Outer_PXLayer_" + layer]->Fill(me_y->getBinContent(j, i) * 1e4);
             residuals_["residual_rms_x_Outer_PXLayer_" + layer]->Fill(me_x->getBinError(j, i) * 1e4);
             residuals_["residual_rms_y_Outer_PXLayer_" + layer]->Fill(me_y->getBinError(j, i) * 1e4);
+            DRnR_["DRnR_mean_x_Outer_PXLayer_" + layer]->Fill(me2_x->getBinContent(j, i));
+            DRnR_["DRnR_mean_y_Outer_PXLayer_" + layer]->Fill(me2_y->getBinContent(j, i));
+            DRnR_["DRnR_rms_x_Outer_PXLayer_" + layer]->Fill(me2_x->getBinError(j, i));
+            DRnR_["DRnR_rms_y_Outer_PXLayer_" + layer]->Fill(me2_y->getBinError(j, i));
           }
         }
       }
@@ -451,6 +559,10 @@ void SiPixelPhase1Summary::fillSummaries(DQMStore::IBooker& iBooker, DQMStore::I
         iGetter.get("PixelPhase1/Tracks/PXForward/residual_x_per_PXDisk_per_SignedBladePanel_PXRing_" + ring);
     MonitorElement* me_y =
         iGetter.get("PixelPhase1/Tracks/PXForward/residual_y_per_PXDisk_per_SignedBladePanel_PXRing_" + ring);
+    MonitorElement* me2_x =
+        iGetter.get("PixelPhase1/Tracks/PXForward/DRnR_x_per_PXDisk_per_SignedBladePanel_PXRing_" + ring);
+    MonitorElement* me2_y =
+        iGetter.get("PixelPhase1/Tracks/PXForward/DRnR_y_per_PXDisk_per_SignedBladePanel_PXRing_" + ring);
     bool posSide = false;
     for (int j = 1; j <= me_x->getNbinsX(); j++) {
       if (j == 4)
@@ -473,11 +585,19 @@ void SiPixelPhase1Summary::fillSummaries(DQMStore::IBooker& iBooker, DQMStore::I
           residuals_["residual_mean_y_Inner"]->Fill(me_y->getBinContent(j, i) * 1e4);
           residuals_["residual_rms_x_Inner"]->Fill(me_x->getBinError(j, i) * 1e4);
           residuals_["residual_rms_y_Inner"]->Fill(me_y->getBinError(j, i) * 1e4);
+          DRnR_["DRnR_mean_x_Inner"]->Fill(me2_x->getBinContent(j, i));
+          DRnR_["DRnR_mean_y_Inner"]->Fill(me2_y->getBinContent(j, i));
+          DRnR_["DRnR_rms_x_Inner"]->Fill(me2_x->getBinError(j, i));
+          DRnR_["DRnR_rms_y_Inner"]->Fill(me2_y->getBinError(j, i));
         } else {
           residuals_["residual_mean_x_Outer"]->Fill(me_x->getBinContent(j, i) * 1e4);
           residuals_["residual_mean_y_Outer"]->Fill(me_y->getBinContent(j, i) * 1e4);
           residuals_["residual_rms_x_Outer"]->Fill(me_x->getBinError(j, i) * 1e4);
           residuals_["residual_rms_y_Outer"]->Fill(me_y->getBinError(j, i) * 1e4);
+          DRnR_["DRnR_mean_x_Outer"]->Fill(me2_x->getBinContent(j, i));
+          DRnR_["DRnR_mean_y_Outer"]->Fill(me2_y->getBinContent(j, i));
+          DRnR_["DRnR_rms_x_Outer"]->Fill(me2_x->getBinError(j, i));
+          DRnR_["DRnR_rms_y_Outer"]->Fill(me2_y->getBinError(j, i));
         }
 
         if (!posSide) {  //separate postive and negative side
@@ -485,11 +605,19 @@ void SiPixelPhase1Summary::fillSummaries(DQMStore::IBooker& iBooker, DQMStore::I
           residuals_["residual_mean_y_neg"]->Fill(me_y->getBinContent(j, i) * 1e4);
           residuals_["residual_rms_x_neg"]->Fill(me_x->getBinError(j, i) * 1e4);
           residuals_["residual_rms_y_neg"]->Fill(me_y->getBinError(j, i) * 1e4);
+          DRnR_["DRnR_mean_x_neg"]->Fill(me2_x->getBinContent(j, i));
+          DRnR_["DRnR_mean_y_neg"]->Fill(me2_y->getBinContent(j, i));
+          DRnR_["DRnR_rms_x_neg"]->Fill(me2_x->getBinError(j, i));
+          DRnR_["DRnR_rms_y_neg"]->Fill(me2_y->getBinError(j, i));
         } else {
           residuals_["residual_mean_x_pos"]->Fill(me_x->getBinContent(j, i) * 1e4);
           residuals_["residual_mean_y_pos"]->Fill(me_y->getBinContent(j, i) * 1e4);
           residuals_["residual_rms_x_pos"]->Fill(me_x->getBinError(j, i) * 1e4);
           residuals_["residual_rms_y_pos"]->Fill(me_y->getBinError(j, i) * 1e4);
+          DRnR_["DRnR_mean_x_pos"]->Fill(me2_x->getBinContent(j, i));
+          DRnR_["DRnR_mean_y_pos"]->Fill(me2_y->getBinContent(j, i));
+          DRnR_["DRnR_rms_x_pos"]->Fill(me2_x->getBinError(j, i));
+          DRnR_["DRnR_rms_y_pos"]->Fill(me2_y->getBinError(j, i));
         }
       }
     }

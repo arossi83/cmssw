@@ -69,6 +69,7 @@ private:
   std::map<std::string, MonitorElement*> summaryMap_;
   MonitorElement* deadROCSummary;
   std::map<std::string, MonitorElement*> residuals_;
+  std::map<std::string, MonitorElement*> DRnR_;
   MonitorElement* reportSummary;  //Float value of the average of the ins in the grand summary
 
   std::map<std::string, std::string> summaryPlotName_;

@@ -77,13 +77,49 @@ SiPixelPhase1TrackResidualsResOtherBadY = SiPixelPhase1TrackResidualsResOtherBad
 )
 
 
+SiPixelPhase1TrackDRnRX = DefaultHistoTrack.clone(
+  name = "DRnR_x",
+  title = "Normalized Residuals X",
+  range_min = -5, range_max = 5, range_nbins = 100,
+  xlabel = "(x_rec - x_pred)/x_err",
+  dimensions = 1,
+  specs = VPSet(
+    StandardSpecification2DProfile,
+    Specification().groupBy("PXBarrel/PXLayer").saveAll(),
+    Specification().groupBy("PXForward/PXDisk").saveAll(),
+
+    Specification().groupBy("PXBarrel/PXLayer/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXBarrel/PXLayer", "EXTEND_X")
+                   .save(),
+
+    Specification().groupBy("PXForward/PXDisk/LumiBlock")
+                   .reduce("MEAN")
+                   .groupBy("PXForward/PXDisk", "EXTEND_X")
+                   .save(),
+
+    Specification(PerLayer1D).groupBy("PXBarrel/Shell/PXLayer").save(),
+    Specification(PerLayer1D).groupBy("PXForward/HalfCylinder/PXRing/PXDisk").save()
+  )
+)
+
+SiPixelPhase1TrackDRnRY = SiPixelPhase1TrackDRnRX.clone(
+  name = "DRnR_y",
+  title = "Normalized Residuals Y",
+  range_min = -5, range_max = 5, range_nbins = 100,
+  xlabel = "(y_rec - y_pred)/y_err",
+)
+
+
 SiPixelPhase1TrackResidualsConf = cms.VPSet(
   SiPixelPhase1TrackResidualsResidualsX,
   SiPixelPhase1TrackResidualsResidualsY,
   SiPixelPhase1TrackResidualsResOnEdgeX,
   SiPixelPhase1TrackResidualsResOnEdgeY,
   SiPixelPhase1TrackResidualsResOtherBadX,
-  SiPixelPhase1TrackResidualsResOtherBadY
+  SiPixelPhase1TrackResidualsResOtherBadY,
+  SiPixelPhase1TrackDRnRX,
+  SiPixelPhase1TrackDRnRY
 )
 
 from DQMServices.Core.DQMEDAnalyzer import DQMEDAnalyzer

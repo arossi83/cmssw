@@ -23,7 +23,7 @@
 namespace {
 
   class SiPixelPhase1TrackResiduals final : public SiPixelPhase1Base {
-    enum { RESIDUAL_X, RESIDUAL_Y, RESONEDGE_X, RESONEDGE_Y, RESOTHERBAD_X, RESOTHERBAD_Y };
+    enum { RESIDUAL_X, RESIDUAL_Y, RESONEDGE_X, RESONEDGE_Y, RESOTHERBAD_X, RESOTHERBAD_Y, DRNR_X, DRNR_Y };
 
   public:
     explicit SiPixelPhase1TrackResiduals(const edm::ParameterSet& conf);
@@ -79,6 +79,11 @@ namespace {
 
         histo[RESIDUAL_X].fill(it.resXprime, id, &iEvent);
         histo[RESIDUAL_Y].fill(it.resYprime, id, &iEvent);
+
+	if (it.resXprimeErr!=0 && it.resXprimeErr!=0){
+	  histo[DRNR_X].fill(it.resXprime/it.resXprimeErr, id, &iEvent);
+	  histo[DRNR_Y].fill(it.resYprime/it.resYprimeErr, id, &iEvent);
+	}
 
         if (it.isOnEdgePixel) {
           histo[RESONEDGE_X].fill(it.resXprime, id, &iEvent);
