@@ -428,7 +428,8 @@ namespace dqm::impl {
     // We should decide if we support this (or make it default)
     DQM_DEPRECATED
     virtual void setStatOverflows(unsigned int value);
-
+    virtual bool getStatOverflows();
+   
     // these should be non-const, since they are potentially not thread-safe
     virtual TObject const *getRootObject() const;
     virtual TH1 *getTH1();
