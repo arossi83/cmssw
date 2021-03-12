@@ -164,8 +164,6 @@ namespace {
     static int ix,iy, speed;
     bool xdouble[TXSIZE],ydouble[TYSIZE];
     int qbin,ierr;
-    int minPixelRow = 161;
-    int minPixelCol = 417;
     speed=-2;
 
     if (!SiPixelTemplate::pushfile(*templateDBobject_, thePixelTemp_))
@@ -238,6 +236,8 @@ namespace {
           continue;
         auto const& cluster = *clustp;
         const std::vector<SiPixelCluster::Pixel> pixelsVec = cluster.pixels();
+	int minPixelRow = 161;
+	int minPixelCol = 417;
         for (unsigned int i = 0; i < pixelsVec.size(); ++i) {
           float pixx = pixelsVec[i].x;  // index as float=iteger, row index
           float pixy = pixelsVec[i].y;  // same, col index
@@ -251,7 +251,24 @@ namespace {
           } else {
             histo[ON_TRACK_NOTBIGPIXELCHARGE].fill(pixel_charge, id, &iEvent);
           }
-	  // Now fill the cluster buffer with charges
+	 
+	  //  Find lower left corner pixel and its coordinates
+	  if((int)pixx < minPixelRow) {
+	    minPixelRow = (int)pixx; 
+	  }
+	  if((int)pixy < minPixelCol) {
+	    minPixelCol = (int)pixy;
+	  }
+        }  // End loop over pixels
+
+
+	// Now fill the cluster buffer with charges
+	for (unsigned int i = 0; i < pixelsVec.size(); ++i) {
+
+          float pixx = pixelsVec[i].x;  // index as float=iteger, row index
+          float pixy = pixelsVec[i].y;  // same, col index
+          float pixel_charge = pixelsVec[i].adc;
+
 	  ix = (int)pixx - minPixelRow;
 	  if(ix >= TXSIZE) continue;
 	  iy = (int)pixy - minPixelCol;
@@ -265,10 +282,9 @@ namespace {
 	  if ((int)pixy % 52 == 0 || (int)pixy % 52 == 51 ){
 	    ydouble[iy] = true;
 	  }
+	}
 
 
-
-        }  // End loop over pixels
         auto const& ltp = trajParams[h];
 
         auto localDir = ltp.momentum() / ltp.momentum().mag();
